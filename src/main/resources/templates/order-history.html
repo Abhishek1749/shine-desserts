@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Shine</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="seller-page">
+
+<header class="seller-topbar">
+    <div>
+        <a class="seller-brand" href="/">Shine</a>
+        <p>Customer Order History</p>
+    </div>
+
+    <div class="seller-actions">
+        <a href="/">Back to Website</a>
+    </div>
+</header>
+
+<main class="seller-layout">
+    <section class="summary-card main-summary">
+        <p class="seller-eyebrow">Track orders</p>
+        <h1>Your Order History</h1>
+        <p>Enter the phone number used while ordering to view your previous Shine dessert requests.</p>
+
+        <form class="history-form" th:action="@{/orders/history}" method="post">
+            <input type="tel" name="phone" placeholder="Enter 10 digit phone number" required>
+            <button class="submit-btn" type="submit">View Orders</button>
+        </form>
+    </section>
+
+    <section class="orders-dashboard" th:if="${orders != null}">
+        <div class="orders-dashboard-head">
+            <h2>Orders For <span th:text="${phone}">phone</span></h2>
+            <p th:if="${#lists.isEmpty(orders)}">No orders found for this phone number.</p>
+            <p th:if="${!#lists.isEmpty(orders)}">Newest orders appear first.</p>
+        </div>
+
+        <div class="orders-scroll" th:if="${!#lists.isEmpty(orders)}">
+            <table class="professional-orders-table">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Dessert</th>
+                    <th>Qty</th>
+                    <th>Address</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td><span class="order-number" th:text="'#' + ${order.id}">#1</span></td>
+                    <td><span class="dessert-label" th:text="${order.dessertName}">Dessert</span></td>
+                    <td><span class="quantity-label" th:text="${order.quantity}">1</span></td>
+                    <td><span class="order-message" th:text="${order.address}">Address</span></td>
+                    <td>
+                        <span class="order-message"
+                              th:text="${order.message != null && !order.message.isEmpty() ? order.message : 'No message'}">
+                            Message
+                        </span>
+                    </td>
+                    <td>
+                        <span class="order-date" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy, hh:mm a')}">
+                            Date
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

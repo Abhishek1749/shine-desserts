@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shine Desserts</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="hero">
+    <nav class="nav">
+    <a class="logo" href="/">Shine</a>
+
+    <div class="nav-links">
+        <a href="#menu">Menu</a>
+        <a href="#order">Order</a>
+        <a href="/orders/history">Order History</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </div>
+    </nav>
+
+    <section class="hero-grid">
+        <div class="hero-content">
+            <p class="eyebrow">Fresh homemade desserts</p>
+            <h1>Premium cakes and desserts made to shine.</h1>
+            <p class="hero-copy">
+                Brownies, chocolate cake, tiramisu, dream cake, cheesecake, Matilda cake,
+                muffins, and cupcakes made fresh for celebrations, gifts, and sweet cravings.
+            </p>
+
+            <div class="hero-actions">
+                <a class="btn primary" href="#order">Order Now</a>
+                <a class="btn secondary" href="#menu">Explore Menu</a>
+            </div>
+
+            <div class="hero-stats">
+                <div>
+                    <strong>Fresh</strong>
+                    <span>Baked on order</span>
+                </div>
+                <div>
+                    <strong>Custom</strong>
+                    <span>Party requests</span>
+                </div>
+                <div>
+                    <strong>Premium</strong>
+                    <span>Rich flavors</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-panel">
+            <span class="panel-tag">Today Special</span>
+            <h2>Dream Cake</h2>
+            <p>Layers of chocolate sponge, mousse, ganache, and crunch.</p>
+            <strong>From ₹250</strong>
+        </div>
+    </section>
+</header>
+
+<main>
+    <section class="feature-strip">
+        <div>
+            <strong>Birthday Cakes</strong>
+            <span>Custom cake orders</span>
+        </div>
+        <div>
+            <strong>Party Boxes</strong>
+            <span>Cupcakes and brownies</span>
+        </div>
+        <div>
+            <strong>Gift Desserts</strong>
+            <span>Neat premium packing</span>
+        </div>
+    </section>
+
+    <section id="menu" class="section">
+        <div class="section-heading">
+            <p class="eyebrow">Our menu</p>
+            <h2>Best selling desserts</h2>
+            <p>Choose from Shine's fresh dessert collection and place a quick order request.</p>
+        </div>
+
+        <div class="products">
+            <article class="card" th:each="product : ${products}">
+                <span class="badge" th:text="${product.badge}">Best Seller</span>
+                <h3 th:text="${product.name}">Dessert</h3>
+                <p th:text="${product.description}">Description</p>
+                <div class="card-bottom">
+                    <div class="price" th:text="'₹' + ${#numbers.formatDecimal(product.price, 0, 0)}">₹120</div>
+                    <a href="#order">Order</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="order" class="order-section">
+        <div class="order-copy">
+            <p class="eyebrow">Quick order</p>
+            <h2>Reserve your dessert today</h2>
+            <p>
+                Fill this form and Shine will contact you to confirm the price,
+                customization, pickup, or delivery details.
+            </p>
+
+            <div class="order-note">
+                <strong>What you can request</strong>
+                <span>Birthday cakes, bulk cupcakes, brownie boxes, custom messages, and party desserts.</span>
+            </div>
+        </div>
+
+        <form class="order-form" th:action="@{/order}" th:object="${customerOrder}" method="post">
+            <div class="success" th:if="${orderSuccess}" th:text="${orderSuccess}"></div>
+            <div class="error-box" th:if="${orderError}" th:text="${orderError}"></div>
+
+            <label>
+                Name
+                <input type="text" th:field="*{customerName}" placeholder="Your name">
+                <small th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></small>
+            </label>
+
+            <label>
+                Phone
+                <input type="tel" th:field="*{phone}" placeholder="10 digit mobile number">
+                <small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+            </label>
+
+            <label>
+                Email
+                <input type="email" th:field="*{email}" placeholder="Optional email">
+                <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+            </label>
+            <label class="wide">
+                Address
+                <textarea th:field="*{address}" rows="3" placeholder="Delivery address or pickup note"></textarea>
+                <small th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+            </label>
+            <label>
+                Dessert
+                <select th:field="*{dessertName}">
+                    <option value="">Choose dessert</option>
+                    <option th:each="product : ${products}" th:value="${product.name}" th:text="${product.name}"></option>
+                </select>
+                <small th:if="${#fields.hasErrors('dessertName')}" th:errors="*{dessertName}"></small>
+            </label>
+
+            <label>
+                Quantity
+                <input type="number" th:field="*{quantity}" min="1" placeholder="1">
+                <small th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></small>
+            </label>
+
+            <label class="wide">
+                Message
+                <textarea th:field="*{message}" rows="4" placeholder="Flavor, date, custom note, or address"></textarea>
+            </label>
+
+            <button class="submit-btn" type="submit">Send Order Request</button>
+        </form>
+    </section>
+
+    <section id="about" class="about">
+        <div>
+            <p class="eyebrow">About Shine</p>
+            <h2>Homemade desserts with a polished bakery feel.</h2>
+        </div>
+        <p>
+            Shine prepares small-batch desserts for birthdays, family events, gifts, and everyday cravings.
+            Every order is made with care, rich flavor, and clean presentation.
+        </p>
+    </section>
+
+    <section id="contact" class="contact">
+        <div>
+            <strong>Call</strong>
+            <span>+91 98765 43210</span>
+        </div>
+        <div>
+            <strong>Instagram</strong>
+            <span>@shine_desserts</span>
+        </div>
+        <div>
+            <strong>Orders</strong>
+            <span>Freshly prepared on request</span>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2026 Shine. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

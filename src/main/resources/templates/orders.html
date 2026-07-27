@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Orders - Shine</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="seller-page">
+
+<header class="seller-topbar">
+    <div>
+        <a class="seller-brand" href="/">Shine</a>
+        <p>Seller Dashboard</p>
+    </div>
+
+    <div class="seller-actions">
+        <a href="/">View Website</a>
+        <a href="/seller/orders">Refresh</a>
+    </div>
+</header>
+
+<main class="seller-layout">
+    <section class="seller-summary">
+        <div class="summary-card main-summary">
+            <p class="seller-eyebrow">Order Management</p>
+            <h1>Customer Orders</h1>
+            <p>Track dessert orders, customer contact details, quantities, messages, and order time in one clean dashboard.</p>
+        </div>
+
+        <div class="summary-card count-card">
+            <span>Total Orders</span>
+            <strong th:text="${#lists.size(orders)}">0</strong>
+        </div>
+    </section>
+
+    <section class="orders-dashboard">
+        <div class="orders-dashboard-head">
+            <div>
+                <h2>Latest Orders</h2>
+                <p>Newest customer requests appear first.</p>
+            </div>
+        </div>
+
+        <div class="empty-orders" th:if="${#lists.isEmpty(orders)}">
+            <h3>No orders yet</h3>
+            <p>When customers submit the order form, their details will appear here.</p>
+        </div>
+
+        <div class="orders-scroll" th:if="${!#lists.isEmpty(orders)}">
+            <table class="professional-orders-table">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Contact</th>
+                    <th>Dessert</th>
+                    <th>Qty</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td>
+                        <span class="order-number" th:text="'#' + ${order.id}">#1</span>
+                    </td>
+
+                    <td>
+                        <strong class="customer-name" th:text="${order.customerName}">Customer Name</strong>
+                    </td>
+
+                    <td>
+                        <div class="seller-contact">
+                            <a th:href="'tel:' + ${order.phone}" th:text="${order.phone}">Phone</a>
+                            <span th:if="${order.email != null && !order.email.isEmpty()}" th:text="${order.email}">Email</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="dessert-label" th:text="${order.dessertName}">Dessert</span>
+                    </td>
+
+                    <td>
+                        <span class="quantity-label" th:text="${order.quantity}">1</span>
+                    </td>
+
+                    <td>
+                        <span class="order-message"
+                              th:text="${order.message != null && !order.message.isEmpty() ? order.message : 'No message'}">
+                            Message
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="order-date" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy, hh:mm a')}">
+                            Date
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
